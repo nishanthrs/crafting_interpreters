@@ -22,11 +22,12 @@ public class Lox {
         }
     }
 
-    // Run Lox file 
+    // Run Lox file
     private static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
-        run(new String(bytes, Charset.defaultCharset()));  
-        if (hadError) System.exit(65);  
+        run(new String(bytes, Charset.defaultCharset()));
+        if (hadError)
+            System.exit(65);
     }
 
     // Open REPL for Lox
@@ -37,7 +38,8 @@ public class Lox {
         for (;;) {
             System.out.print("> ");
             String line = reader.readLine();
-            if (line == null) break;
+            if (line == null)
+                break;
             run(line);
             hadError = false;
         }
@@ -45,8 +47,8 @@ public class Lox {
 
     // Implementation of interpreter/compiler
     private static void run(String source) {
-        Scanner scanner = new Scanner(source);
-        List<Token> tokens = scanner.scanTokens();
+        Tokenizer tokenizer = new Tokenizer(source);
+        List<Token> tokens = tokenizer.scanTokens();
 
         for (Token token : tokens) {
             System.out.println(token);
@@ -62,6 +64,5 @@ public class Lox {
         System.err.println("[line " + lineNum + "] Error" + where + ": " + message);
         hadError = true;
     }
-
 
 }

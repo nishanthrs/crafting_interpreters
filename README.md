@@ -13,4 +13,5 @@ javac -d . lox/*.java
 ## Run REPL
 ```
 java com.craftinginterpreters.lox.Lox
+java com.craftinginterpreters.lox.Lox sample.lox
 ```

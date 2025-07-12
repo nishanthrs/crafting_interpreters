@@ -8,7 +8,7 @@ import java.util.Map;
 // Import everything from TokenType.java
 import static com.craftinginterpreters.lox.TokenType.*;
 
-class Scanner {
+class Tokenizer {
     private static final Map<String, TokenType> keywords;
     static {
         keywords = new HashMap<>();
@@ -37,7 +37,7 @@ class Scanner {
     private int current = 0;
     private int lineNum = 1;
 
-    Scanner(String source) {
+    Tokenizer(String source) {
         this.source = source;
     }
 

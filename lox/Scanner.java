@@ -57,33 +57,51 @@ class Scanner {
 
     private void scanToken() {
         char c = advance();
-        System.out.println("Char " + c + " with idx: " + current);
         switch (c) {
             // Single-char tokens
-            case '(': addToken(LEFT_PAREN); break;
-            case ')': addToken(RIGHT_PAREN); break;
-            case '{': addToken(LEFT_BRACE); break;
-            case '}': addToken(RIGHT_BRACE); break;
-            case ',': addToken(COMMA); break;
-            case '.': addToken(DOT); break;
-            case '-': addToken(MINUS); break;
-            case '+': addToken(PLUS); break;
-            case ';': addToken(SEMICOLON); break;
-            case '*': addToken(STAR); break;
+            case '(':
+                addToken(LEFT_PAREN);
+                break;
+            case ')':
+                addToken(RIGHT_PAREN);
+                break;
+            case '{':
+                addToken(LEFT_BRACE);
+                break;
+            case '}':
+                addToken(RIGHT_BRACE);
+                break;
+            case ',':
+                addToken(COMMA);
+                break;
+            case '.':
+                addToken(DOT);
+                break;
+            case '-':
+                addToken(MINUS);
+                break;
+            case '+':
+                addToken(PLUS);
+                break;
+            case ';':
+                addToken(SEMICOLON);
+                break;
+            case '*':
+                addToken(STAR);
+                break;
             // Can be divide operator or comments
             case '/':
                 // If second char = / (i.e. //), then it's a comment and don't add any tokens
-                System.out.println("/ (first) at " + current);
                 if (match('/')) {
-                    System.out.println("/ at " + current);
                     while (peek() != '\n' && !isAtEnd()) {
                         advance();
                     }
                 } else if (match('*')) {
-                    advance();
-                    while (peek() != '*' && peekNext() != '/') {
+                    while (!(peek() == '*' && peekNext() == '/')) {
                         advance();
                     }
+                    advance();
+                    advance();
                 } else {
                     addToken(SLASH);
                 }
@@ -116,8 +134,7 @@ class Scanner {
                     number();
                 } else if (isAlpha(c)) {
                     identifier();
-                }
-                else {
+                } else {
                     // Keep scanning despite invalid char, so don't exit program
                     Lox.error(lineNum, "Unexpected character: " + c);
                 }
@@ -126,13 +143,15 @@ class Scanner {
     }
 
     private void identifier() {
-        while (isAlphaNumeric(peek())) advance();
+        while (isAlphaNumeric(peek()))
+            advance();
 
         String text = source.substring(start, current);
         TokenType type = keywords.get(text);
         // Default if no keyword is found
-        if (type == null) type = IDENTIFIER;
-        addToken(type);        
+        if (type == null)
+            type = IDENTIFIER;
+        addToken(type);
     }
 
     private boolean isAlpha(char c) {
@@ -146,12 +165,14 @@ class Scanner {
     // Cannot support .1234 or 1234. but can support 1234 or 12.43 or 0.1234
     private void number() {
         // Keep looking until you reach end of number literal
-        while (isDigit(peek())) advance();
+        while (isDigit(peek()))
+            advance();
 
         // See if there's a decimal point
         if (peek() == '.' && isDigit(peekNext())) {
             advance();
-            while (isDigit(peek())) advance();
+            while (isDigit(peek()))
+                advance();
         }
 
         addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
@@ -162,15 +183,17 @@ class Scanner {
     }
 
     private char peekNext() {
-        if (current + 1 >= source.length()) return '\0';
+        if (current + 1 >= source.length())
+            return '\0';
 
-        return source.charAt(current+1);
+        return source.charAt(current + 1);
     }
 
     private void string() {
         while (peek() != '"' && !isAtEnd()) {
             // Support multi-line strings
-            if (peek() == '\n') lineNum++;
+            if (peek() == '\n')
+                lineNum++;
             advance();
         }
 
@@ -181,18 +204,21 @@ class Scanner {
 
         advance();
 
-        String literal = source.substring(start+1, current-1);
+        String literal = source.substring(start + 1, current - 1);
         addToken(STRING, literal);
     }
 
     private char peek() {
-        if (isAtEnd()) return '\0';
+        if (isAtEnd())
+            return '\0';
         return source.charAt(current);
     }
 
     private boolean match(char expected) {
-        if (isAtEnd()) return false;
-        if (source.charAt(current) != expected) return false;
+        if (isAtEnd())
+            return false;
+        if (source.charAt(current) != expected)
+            return false;
 
         current++;
         return true;
